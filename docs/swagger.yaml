@@ -1,0 +1,108 @@
+definitions:
+  models.CreateRequest:
+    properties:
+      message:
+        type: string
+    type: object
+  models.FilterResponse:
+    properties:
+      messages:
+        items:
+          $ref: '#/definitions/models.Message'
+        type: array
+      total:
+        type: integer
+    type: object
+  models.Message:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      status:
+        $ref: '#/definitions/models.Status'
+      updatedAt:
+        type: string
+    type: object
+  models.Status:
+    enum:
+    - PROCESSING
+    - COMPLETED
+    type: string
+    x-enum-varnames:
+    - StatusProcessing
+    - StatusCompleted
+host: localhost:8800
+info:
+  contact: {}
+  description: This is messages_server server.
+  title: Messages server API
+paths:
+  /message/get:
+    get:
+      description: Handles request to get messages by filter.
+      parameters:
+      - description: Message ID
+        in: query
+        name: id
+        type: string
+      - description: Message content
+        in: query
+        name: message
+        type: string
+      - description: Status
+        in: query
+        name: status
+        type: string
+      - description: Creation timestamp (DateTime format)
+        in: query
+        name: created_at
+        type: string
+      - description: Update timestamp (DateTime format)
+        in: query
+        name: updated_at
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved messages
+          schema:
+            $ref: '#/definitions/models.FilterResponse'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Get messages
+      tags:
+      - messages
+  /message/new:
+    post:
+      consumes:
+      - application/json
+      description: Handles request to create a new message and returns the message
+        information in JSON.
+      parameters:
+      - description: Passport
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Created message
+          schema:
+            $ref: '#/definitions/models.Message'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Creating a new message
+      tags:
+      - messages
+swagger: "2.0"
