@@ -54,6 +54,11 @@ func (rs *Handler) new(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	if msg.Message == "" {
+		rs.log.Error(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	resp, err := rs.service.CreateMessage(msg)
 	if err != nil {
@@ -86,7 +91,7 @@ func (rs *Handler) new(w http.ResponseWriter, r *http.Request) {
 // @Param status query string false "Status"
 // @Param created_at query string false "Creation timestamp (DateTime format)"
 // @Param updated_at query string false "Update timestamp (DateTime format)"
-// @Success 200 {object} models.FilterResponse  "Successfully retrieved messages"
+// @Success 200 {object} models.FilterResponse  "Successfully got messages"
 // @Failure 400
 // @Failure 500
 // @Router /message/get [get]

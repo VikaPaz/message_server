@@ -59,7 +59,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successfully retrieved messages",
+                        "description": "Successfully got messages",
                         "schema": {
                             "$ref": "#/definitions/models.FilterResponse"
                         }
@@ -160,12 +160,14 @@ const docTemplate = `{
         "models.Status": {
             "type": "string",
             "enum": [
+                "COMPLETED",
                 "PROCESSING",
-                "COMPLETED"
+                "FAILED"
             ],
             "x-enum-varnames": [
+                "StatusCompleted",
                 "StatusProcessing",
-                "StatusCompleted"
+                "StatusFailed"
             ]
         }
     }

@@ -8,8 +8,9 @@ import (
 type Status string
 
 const (
-	StatusProcessing Status = "PROCESSING"
 	StatusCompleted  Status = "COMPLETED"
+	StatusProcessing Status = "PROCESSING"
+	StatusFailed     Status = "FAILED"
 )
 
 type Message struct {
@@ -21,7 +22,7 @@ type Message struct {
 }
 
 type CreateRequest struct {
-	Message *string `json:"message,omitempty"`
+	Message string `json:"message"`
 }
 
 type FilterRequest struct {
@@ -33,4 +34,14 @@ type FilterRequest struct {
 type FilterResponse struct {
 	Messages []Message
 	Total    int64
+}
+
+type WriteRequest struct {
+	ID      uuid.UUID
+	Message *string
+}
+
+type UpdateRequest struct {
+	ID     uuid.UUID
+	Status *Status
 }

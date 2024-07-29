@@ -10,7 +10,7 @@ import (
 // @host localhost:8800
 func main() {
 
-	logger := NewLogger(logrus.DebugLevel, &logrus.TextFormatter{
+	logger := NewLogger(logrus.InfoLevel, &logrus.TextFormatter{
 		FullTimestamp: true,
 	})
 

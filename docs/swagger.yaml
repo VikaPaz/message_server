@@ -28,12 +28,14 @@ definitions:
     type: object
   models.Status:
     enum:
-    - PROCESSING
     - COMPLETED
+    - PROCESSING
+    - FAILED
     type: string
     x-enum-varnames:
-    - StatusProcessing
     - StatusCompleted
+    - StatusProcessing
+    - StatusFailed
 host: localhost:8800
 info:
   contact: {}
@@ -68,7 +70,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successfully retrieved messages
+          description: Successfully got messages
           schema:
             $ref: '#/definitions/models.FilterResponse'
         "400":

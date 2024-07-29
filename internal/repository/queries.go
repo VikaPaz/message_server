@@ -24,7 +24,8 @@ func NewRepository(conn *sql.DB, logger *logrus.Logger) *MessageRepository {
 
 func (r *MessageRepository) Create(m models.CreateRequest, status models.Status) (models.Message, error) {
 	builder := sq.Insert(`messages (message, status, created_at)`)
-	builder = builder.Values(m.Message, status, time.Now())
+	builder = builder.Values(m.Message, status, time.Now().UTC())
+	builder = builder.Suffix("RETURNING *")
 	builder = builder.PlaceholderFormat(sq.Dollar)
 
 	query, args, err := builder.ToSql()
@@ -32,7 +33,7 @@ func (r *MessageRepository) Create(m models.CreateRequest, status models.Status)
 		return models.Message{}, err
 	}
 
-	r.log.Debugf("Executing query: %v", query)
+	r.log.Debugf("Executing query: %v, args: %v", query, args)
 	row := r.conn.QueryRow(query, args...)
 	if err = row.Err(); err != nil {
 		return models.Message{}, err
@@ -101,6 +102,7 @@ func (r *MessageRepository) Get(m models.Message, limit uint64, offset uint64) (
 func (r *MessageRepository) Update(id uuid.UUID, status models.Status) (models.Message, error) {
 	builder := sq.Update("messages").Set("status", status).Set("updated_at", time.Now().UTC())
 	builder = builder.Where(sq.Eq{"id": id})
+	builder = builder.Suffix("RETURNING *")
 	builder = builder.PlaceholderFormat(sq.Dollar)
 
 	query, args, err := builder.ToSql()
