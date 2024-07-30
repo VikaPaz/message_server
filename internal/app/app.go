@@ -17,16 +17,16 @@ import (
 func Run(logger *logrus.Logger) error {
 	logger.Infoln("Starting server...")
 	logger.Debugf("Loading environment variables")
-	if err := godotenv.Overload(); err != nil {
+	if err := godotenv.Overload("env/.env"); err != nil {
 		logger.Errorf("Error loading .env file")
 		return models.ErrLoadEnvFailed
 	}
 
 	confPostgres := message.Config{
-		Host:     os.Getenv("HOST"),
+		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("POSTGRES_PORT"),
-		User:     os.Getenv("USER"),
-		Password: os.Getenv("PASSWORD"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
 		Dbname:   os.Getenv("DB_NAME"),
 	}
 

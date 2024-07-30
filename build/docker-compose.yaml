@@ -1,7 +1,6 @@
 version: '3.9'
 
 services:
-
   postgres:
     image: postgres:latest
     ports:
@@ -13,7 +12,7 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_DB=messages
 
-  zoo:
+  zoo1:
     image: confluentinc/cp-zookeeper:7.3.2
     hostname: zoo1
     container_name: zoo1
@@ -24,7 +23,7 @@ services:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_SERVERS: zoo1:2888:3888
 
-  kafka:
+  kafka1:
     image: confluentinc/cp-kafka:7.3.2
     hostname: kafka1
     container_name: kafka1
@@ -38,7 +37,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
       KAFKA_BROKER_ID: 1
-      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=ERROR,kafka.producer.async.DefaultEventHandler=ERROR,state.change.logger=ERROR"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -48,3 +47,26 @@ services:
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
     depends_on:
       - zoo1
+
+  processor:
+    build:
+      context: ./..
+      dockerfile: build/processor.Dockerfile
+    depends_on:
+      - kafka1
+    volumes:
+      - ./env:/env
+    restart: on-failure
+
+  server:
+    build:
+      context: ./..
+      dockerfile: build/server.Dockerfile
+    ports:
+      - 8800:8800
+    volumes:
+      - ./env:/env
+    depends_on:
+      - kafka1
+      - postgres
+    restart: on-failure

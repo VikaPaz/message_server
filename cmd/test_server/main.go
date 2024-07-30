@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/VikaPaz/message_server/internal/models"
+	"github.com/joho/godotenv"
 	"github.com/segmentio/kafka-go"
+	"log"
 	"os"
+	"time"
 )
 
 type Config struct {
@@ -27,9 +30,10 @@ type MessageWrite struct {
 }
 
 func main() {
-	// to consume messages
-	//topic := "my-topic"
-	//partition := 0
+	time.Sleep(20 * time.Second) // give kafka time to start
+	if err := godotenv.Overload("env/.env"); err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 
 	confWrite := Config{
 		Topic:     "topic2",
@@ -46,7 +50,7 @@ func main() {
 		Topic:     "topic1",
 		Partition: 0,
 		GroupID:   "g1",
-		Brokers:   []string{"localhost:9092"},
+		Brokers:   []string{os.Getenv("KAFKA_ADDRESS")},
 	}
 
 	reader := kafka.NewReader(confRead)
