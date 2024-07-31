@@ -7,8 +7,8 @@ docker_build_server:
 	docker build -t server -f build/server.Dockerfile .
 
 docker_compose_run:
-	docker-compose -f build/docker-compose.yaml up
+	docker compose -f build/docker-compose.yaml up
 
 docker_compose_build:
-	docker-compose -f build/docker-compose.yaml up --build
+	docker compose -f build/docker-compose.yaml up --build
 

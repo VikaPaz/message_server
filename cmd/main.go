@@ -7,10 +7,10 @@ import (
 
 // @title Messages server API
 // @description This is messages_server server.
-// @host localhost:8800
+// @host 89.169.136.165:8800
 func main() {
 
-	logger := NewLogger(logrus.InfoLevel, &logrus.TextFormatter{
+	logger := NewLogger(logrus.DebugLevel, &logrus.TextFormatter{
 		FullTimestamp: true,
 	})
 

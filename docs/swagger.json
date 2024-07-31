@@ -5,7 +5,7 @@
         "title": "Messages server API",
         "contact": {}
     },
-    "host": "localhost:8800",
+    "host": "89.169.136.165:8800",
     "paths": {
         "/message/get": {
             "get": {

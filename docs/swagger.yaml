@@ -36,7 +36,7 @@ definitions:
     - StatusCompleted
     - StatusProcessing
     - StatusFailed
-host: localhost:8800
+host: 89.169.136.165:8800
 info:
   contact: {}
   description: This is messages_server server.
