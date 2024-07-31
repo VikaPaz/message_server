@@ -55,6 +55,18 @@ const docTemplate = `{
                         "description": "Update timestamp (DateTime format)",
                         "name": "updated_at",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset",
+                        "name": "offset",
+                        "in": "query"
                     }
                 ],
                 "responses": {

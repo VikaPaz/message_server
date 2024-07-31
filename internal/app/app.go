@@ -1,6 +1,7 @@
 package app
 
 import (
+	"database/sql"
 	"github.com/VikaPaz/message_server/internal/client/queue"
 	"github.com/VikaPaz/message_server/internal/models"
 	"github.com/VikaPaz/message_server/internal/repository"
@@ -8,10 +9,12 @@ import (
 	queue2 "github.com/VikaPaz/message_server/internal/server/queue"
 	messageService "github.com/VikaPaz/message_server/internal/service"
 	"github.com/joho/godotenv"
+	"github.com/pressly/goose"
 	"github.com/segmentio/kafka-go"
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 func Run(logger *logrus.Logger) error {
@@ -34,6 +37,12 @@ func Run(logger *logrus.Logger) error {
 	dbConn, err := message.Connection(confPostgres)
 	if err != nil {
 		logger.Errorf("Error connecting to database")
+		return err
+	}
+
+	err = runMigrations(logger, dbConn)
+	if err != nil {
+		logger.Errorf("can't run migrations")
 		return err
 	}
 
@@ -74,4 +83,28 @@ func Run(logger *logrus.Logger) error {
 	}
 
 	return err
+}
+
+func runMigrations(logger *logrus.Logger, dbConn *sql.DB) error {
+	upMigration, err := strconv.ParseBool(os.Getenv("RUN_MIGRATION"))
+	if err != nil {
+		return err
+	}
+
+	if !upMigration {
+		return nil
+	}
+
+	migrationDir := os.Getenv("MIGRATION_DIR")
+	if migrationDir == "" {
+		logger.Infof("no migration dir provided; skipping migrations")
+		return nil
+	}
+	err = goose.Up(dbConn, os.Getenv("MIGRATION_DIR"))
+	if err != nil {
+		return err
+	}
+	logger.Infof("migrations are applied successfully")
+
+	return nil
 }

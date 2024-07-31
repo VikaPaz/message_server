@@ -27,6 +27,8 @@ require (
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pressly/goose v2.7.0+incompatible // indirect
 	github.com/swaggo/files/v2 v2.0.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/tools v0.23.0 // indirect

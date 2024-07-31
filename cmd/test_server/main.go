@@ -3,13 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/VikaPaz/message_server/internal/models"
 	"github.com/joho/godotenv"
 	"github.com/segmentio/kafka-go"
 	"log"
 	"os"
-	"time"
 )
 
 type Config struct {
@@ -30,7 +28,6 @@ type MessageWrite struct {
 }
 
 func main() {
-	time.Sleep(20 * time.Second) // give kafka time to start
 	if err := godotenv.Overload("env/.env"); err != nil {
 		log.Fatalf("Error loading .env file")
 	}
@@ -43,7 +40,7 @@ func main() {
 	}
 	writer, err := Connection(confWrite)
 	if err != nil {
-		fmt.Println("Error connecting to kafka: %v", err)
+		log.Fatalf("Error connecting to kafka: %v", err)
 	}
 
 	confRead := kafka.ReaderConfig{
@@ -58,15 +55,16 @@ func main() {
 	for {
 		msg, err := reader.ReadMessage(context.Background())
 		if err != nil {
-			fmt.Printf("Error reading message: %s\n", err)
-			break
+			log.Printf("Error reading message: %s\n", err)
+			continue
 		}
-		fmt.Println("Message: ", string(msg.Value))
+		log.Println("Message: ", string(msg.Value))
 
 		r := MassageRead{}
 		err = json.Unmarshal(msg.Value, &r)
 		if err != nil {
-			fmt.Printf("Error decoding message: %s\n", err)
+			log.Printf("Error decoding message: %s\n", err)
+			continue
 		}
 
 		w := MessageWrite{
@@ -76,14 +74,16 @@ func main() {
 
 		value, err := json.Marshal(w)
 		if err != nil {
-			fmt.Println("failed to serialize structure: %v", err)
+			log.Println("failed to serialize structure: %v", err)
+			continue
 		}
 
 		_, err = writer.WriteMessages(
 			kafka.Message{Value: value},
 		)
 		if err != nil {
-			fmt.Println("failed to write messages: %v", err)
+			log.Println("failed to write messages: %v", err)
+			continue
 		}
 	}
 }

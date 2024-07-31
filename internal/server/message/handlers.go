@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -91,6 +92,8 @@ func (rs *Handler) new(w http.ResponseWriter, r *http.Request) {
 // @Param status query string false "Status"
 // @Param created_at query string false "Creation timestamp (DateTime format)"
 // @Param updated_at query string false "Update timestamp (DateTime format)"
+// @Param limit query uint64 false "Limit"
+// @Param offset query uint64 false "Offset"
 // @Success 200 {object} models.FilterResponse  "Successfully got messages"
 // @Failure 400
 // @Failure 500
@@ -126,11 +129,29 @@ func (rs *Handler) get(w http.ResponseWriter, r *http.Request) {
 	if updatedAtStr := params.Get("updated_at"); updatedAtStr != "" {
 		updatedAt, err := time.Parse(time.DateTime, updatedAtStr)
 		if err != nil {
-			rs.log.Error(w, "Invalid start_time parameter (RFC3339 format expected)", http.StatusBadRequest)
+			rs.log.Error(w, "Invalid updated_at parameter (RFC3339 format expected)", http.StatusBadRequest)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		filter.Fields.CreatedAt = &updatedAt
+	}
+	if l := params.Get("limit"); l != "" {
+		limit, err := strconv.ParseUint(l, 10, 64)
+		if err != nil {
+			rs.log.Error(w, "Invalid limit parameter (uint64 format expected)", http.StatusBadRequest)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		filter.Limit = limit
+	}
+	if l := params.Get("offset"); l != "" {
+		offset, err := strconv.ParseUint(l, 10, 64)
+		if err != nil {
+			rs.log.Error(w, "Invalid offset parameter (uint64 format expected)", http.StatusBadRequest)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		filter.Offset = offset
 	}
 
 	resp, err := rs.service.GetMessages(filter)

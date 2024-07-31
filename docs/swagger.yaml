@@ -66,6 +66,14 @@ paths:
         in: query
         name: updated_at
         type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
       produces:
       - application/json
       responses:
