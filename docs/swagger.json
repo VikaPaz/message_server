@@ -38,14 +38,14 @@
                     },
                     {
                         "type": "string",
-                        "description": "Creation timestamp (DateTime format)",
-                        "name": "created_at",
+                        "description": "Created after (RFC3339 format)",
+                        "name": "created_after",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Update timestamp (DateTime format)",
-                        "name": "updated_at",
+                        "description": "Updated after (RFC3339 format)",
+                        "name": "updated_after",
                         "in": "query"
                     },
                     {

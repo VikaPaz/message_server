@@ -67,7 +67,7 @@ func (r *MessageRepository) Get(m models.Message, limit uint64, offset uint64) (
 		builder = builder.Where(sq.GtOrEq{"created_at": *m.CreatedAt})
 	}
 	if m.UpdatedAt != nil {
-		builder = builder.Where(sq.LtOrEq{"updated_at": *m.UpdatedAt})
+		builder = builder.Where(sq.GtOrEq{"updated_at": *m.UpdatedAt})
 	}
 	if limit > 0 {
 		builder = builder.Limit(limit)

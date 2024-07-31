@@ -90,8 +90,8 @@ func (rs *Handler) new(w http.ResponseWriter, r *http.Request) {
 // @Param id query string false "Message ID"
 // @Param message query string false "Message content"
 // @Param status query string false "Status"
-// @Param created_at query string false "Creation timestamp (DateTime format)"
-// @Param updated_at query string false "Update timestamp (DateTime format)"
+// @Param created_after query string false "Created after (RFC3339 format)"
+// @Param updated_after query string false "Updated after (RFC3339 format)"
 // @Param limit query uint64 false "Limit"
 // @Param offset query uint64 false "Offset"
 // @Success 200 {object} models.FilterResponse  "Successfully got messages"
@@ -117,8 +117,8 @@ func (rs *Handler) get(w http.ResponseWriter, r *http.Request) {
 		s := models.Status(status)
 		filter.Fields.Status = &s
 	}
-	if createdAtStr := params.Get("created_at"); createdAtStr != "" {
-		createdAt, err := time.Parse(time.DateTime, createdAtStr)
+	if createdAtStr := params.Get("created_after"); createdAtStr != "" {
+		createdAt, err := time.Parse(time.RFC3339, createdAtStr)
 		if err != nil {
 			rs.log.Error(w, "Invalid start_time parameter (RFC3339 format expected)", http.StatusBadRequest)
 			w.WriteHeader(http.StatusBadRequest)
@@ -126,8 +126,8 @@ func (rs *Handler) get(w http.ResponseWriter, r *http.Request) {
 		}
 		filter.Fields.CreatedAt = &createdAt
 	}
-	if updatedAtStr := params.Get("updated_at"); updatedAtStr != "" {
-		updatedAt, err := time.Parse(time.DateTime, updatedAtStr)
+	if updatedAtStr := params.Get("updated_after"); updatedAtStr != "" {
+		updatedAt, err := time.Parse(time.RFC3339, updatedAtStr)
 		if err != nil {
 			rs.log.Error(w, "Invalid updated_at parameter (RFC3339 format expected)", http.StatusBadRequest)
 			w.WriteHeader(http.StatusBadRequest)

@@ -58,13 +58,13 @@ paths:
         in: query
         name: status
         type: string
-      - description: Creation timestamp (DateTime format)
+      - description: Created after (RFC3339 format)
         in: query
-        name: created_at
+        name: created_after
         type: string
-      - description: Update timestamp (DateTime format)
+      - description: Updated after (RFC3339 format)
         in: query
-        name: updated_at
+        name: updated_after
         type: string
       - description: Limit
         in: query
