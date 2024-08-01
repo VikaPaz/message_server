@@ -8,6 +8,7 @@ import (
 	"github.com/segmentio/kafka-go"
 	"log"
 	"os"
+	"time"
 )
 
 type Config struct {
@@ -47,6 +48,7 @@ func main() {
 		Topic:     "topic1",
 		Partition: 0,
 		GroupID:   "g1",
+		MaxWait:   24 * time.Hour * 10,
 		Brokers:   []string{os.Getenv("KAFKA_ADDRESS")},
 	}
 

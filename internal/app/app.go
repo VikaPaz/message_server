@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 func Run(logger *logrus.Logger) error {
@@ -64,6 +65,7 @@ func Run(logger *logrus.Logger) error {
 		Topic:     "topic2",
 		Partition: 0,
 		GroupID:   "g2",
+		MaxWait:   24 * time.Hour * 10,
 		Brokers:   []string{os.Getenv("KAFKA_ADDRESS")},
 	}
 	que := queue.NewQueue(kafkaConn, logger)
