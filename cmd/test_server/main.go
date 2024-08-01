@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"github.com/VikaPaz/message_server/internal/client/queue"
 	"github.com/VikaPaz/message_server/internal/models"
 	"github.com/joho/godotenv"
 	"github.com/segmentio/kafka-go"
@@ -10,13 +11,6 @@ import (
 	"os"
 	"time"
 )
-
-type Config struct {
-	Topic     string
-	Partition int
-	Host      string
-	Network   string
-}
 
 type MassageRead struct {
 	ID      string `json:"ID"`
@@ -33,13 +27,13 @@ func main() {
 		log.Fatalf("Error loading .env file")
 	}
 
-	confWrite := Config{
+	confWrite := queue.Config{
 		Topic:     "topic2",
 		Partition: 0,
 		Host:      os.Getenv("KAFKA_ADDRESS"),
 		Network:   "tcp",
 	}
-	writer, err := Connection(confWrite)
+	writer, err := queue.Connection(confWrite)
 	if err != nil {
 		log.Fatalf("Error connecting to kafka: %v", err)
 	}
@@ -88,12 +82,4 @@ func main() {
 			continue
 		}
 	}
-}
-
-func Connection(conf Config) (*kafka.Conn, error) {
-	conn, err := kafka.DialLeader(context.Background(), conf.Network, conf.Host, conf.Topic, conf.Partition)
-	if err != nil {
-		return nil, err
-	}
-	return conn, nil
 }

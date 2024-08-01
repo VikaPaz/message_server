@@ -3,6 +3,7 @@ package queue
 import (
 	"context"
 	"github.com/segmentio/kafka-go"
+	"time"
 )
 
 type Config struct {
@@ -14,7 +15,10 @@ type Config struct {
 
 // to produce messages
 func Connection(conf Config) (*kafka.Conn, error) {
-	conn, err := kafka.DialLeader(context.Background(), conf.Network, conf.Host, conf.Topic, conf.Partition)
+	dialer := &kafka.Dialer{
+		KeepAlive: 10 * time.Second,
+	}
+	conn, err := dialer.DialLeader(context.Background(), conf.Network, conf.Host, conf.Topic, conf.Partition)
 	if err != nil {
 		return nil, err
 	}

@@ -64,7 +64,7 @@ func (rs *Handler) new(w http.ResponseWriter, r *http.Request) {
 	resp, err := rs.service.CreateMessage(msg)
 	if err != nil {
 		rs.log.Error(err)
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 
 	data, err := json.Marshal(resp)

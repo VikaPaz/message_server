@@ -23,6 +23,7 @@ func (q *MessageQueue) Write(m models.WriteRequest) error {
 	value, err := json.Marshal(m)
 	if err != nil {
 		q.log.Error("failed to serialize structure: %v", err)
+		return err
 	}
 
 	q.log.Debugf("Writing message to kafka: %v", string(value))
@@ -33,9 +34,5 @@ func (q *MessageQueue) Write(m models.WriteRequest) error {
 		q.log.Errorf("failed to write messages: %v", err)
 		return err
 	}
-
-	//if err := q.conn.Close(); err != nil {
-	//	log.Fatal("failed to close writer:", err)
-	//}
 	return nil
 }
